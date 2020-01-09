@@ -17,7 +17,7 @@ using WholesaleApi.Configuration;
 
 namespace WholesaleApi.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -33,7 +33,6 @@ namespace WholesaleApi.Controllers
             _appSettings = appSettings.Value;
         }
 
-        [AllowAnonymous]
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody]LoginQuery model)
         {
@@ -67,9 +66,8 @@ namespace WholesaleApi.Controllers
             });
         }
 
-        [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody]RegisterQuery model)
+        public async Task<IActionResult> Register([FromBody]RegisterQuery model)
         {
             // map model to entity
             var user = _mapper.Map<User>(model);
@@ -77,7 +75,7 @@ namespace WholesaleApi.Controllers
             try
             {
                 // create user
-                _userService.Create(user, model.Password);
+                await _userService.Create(user, model.Password);
                 return Ok();
             }
             catch (Exception ex)
@@ -88,23 +86,23 @@ namespace WholesaleApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var users = _userService.GetAll();
+            var users = await _userService.GetAll();
             var model = _mapper.Map<IList<UserDto>>(users);
-            return Ok(model);
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var user = _userService.GetById(id);
+            var user = await _userService.GetById(id);
             var model = _mapper.Map<UserDto>(user);
             return Ok(model);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UserDto model)
+        public async Task<IActionResult> Update(int id, [FromBody]UserDto model)
         {
             // map model to entity and set id
             var user = _mapper.Map<User>(model);
@@ -113,7 +111,7 @@ namespace WholesaleApi.Controllers
             try
             {
                 // update user 
-                _userService.Update(user, model.Password);
+                await _userService.Update(user, model.Password);
                 return Ok();
             }
             catch (Exception ex)
@@ -124,9 +122,9 @@ namespace WholesaleApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _userService.Delete(id);
+            await _userService.Delete(id);
             return Ok();
         }
     }

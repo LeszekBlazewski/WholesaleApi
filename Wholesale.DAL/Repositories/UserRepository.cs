@@ -26,9 +26,10 @@ namespace Wholesale.DAL.Repositories
             return await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
         }
 
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<List<User>> GetAll()
         {
-            return await _context.Users.ToListAsync();
+            var users = await _context.Users.ToListAsync();
+            return users;
         }
 
         public async Task Create(User user)
@@ -57,8 +58,7 @@ namespace Wholesale.DAL.Repositories
 
         public async Task<bool> IsEmailTaken(string email)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
-            return user != null;
+            return await _context.Users.AnyAsync(x => x.Email == email);
         }
     }
 }

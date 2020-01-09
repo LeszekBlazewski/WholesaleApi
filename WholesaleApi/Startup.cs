@@ -28,7 +28,6 @@ namespace WholesaleApi
             var moduleConfiguration = new ModuleConfiguration(Configuration, services);
 
             moduleConfiguration.CreateNpsqlEnumMappings();
-            moduleConfiguration.AddDatabaseContext();
 
             services.AddCors();
             services.AddControllers();
@@ -37,6 +36,7 @@ namespace WholesaleApi
             moduleConfiguration.AddJwtAuthentication();
             moduleConfiguration.AddSwagger();
             moduleConfiguration.ConfigureServices();
+            moduleConfiguration.AddDatabaseContext();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

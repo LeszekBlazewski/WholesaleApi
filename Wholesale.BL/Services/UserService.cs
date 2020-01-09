@@ -35,9 +35,10 @@ namespace Wholesale.BL.Services
             return await _usersRepository.GetById(userId);
         }
 
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<List<User>> GetAll()
         {
-            return await _usersRepository.GetAll();
+            var users = await _usersRepository.GetAll();
+            return users;
         }
 
         public async Task<User> Create(User user, string password)
@@ -45,9 +46,7 @@ namespace Wholesale.BL.Services
             if (string.IsNullOrWhiteSpace(password))
                 throw new InvalidOperationException("Password is required");
 
-            var existingUser = await _usersRepository.GetByEmail(user.Email);
-
-            if (existingUser != null)
+            if (await _usersRepository.IsEmailTaken(user.Email))
                 throw new InvalidOperationException($"An account with an email address \"{user.Email}\" already exists");
 
             password.CreatePasswordHash(out var passwordHash, out var passwordSalt);

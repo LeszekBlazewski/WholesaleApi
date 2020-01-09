@@ -9,7 +9,7 @@ namespace Wholesale.BL.RepositoryInterfaces
     {
         Task<User> GetById(int userId);
         Task<User> GetByEmail(string email);
-        Task<IEnumerable<User>> GetAll();
+        Task<List<User>> GetAll();
         Task Create(User user);
         Task Update(User user);
         Task Delete(int id);

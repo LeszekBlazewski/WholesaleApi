@@ -10,7 +10,7 @@ namespace Wholesale.BL.Services
 
         Task<User> GetById(int userId);
 
-        Task<IEnumerable<User>> GetAll();
+        Task<List<User>> GetAll();
 
         Task<User> Create(User user, string password);
 

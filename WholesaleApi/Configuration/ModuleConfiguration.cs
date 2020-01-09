@@ -42,9 +42,15 @@ namespace WholesaleApi.Configuration
         {
             var connectionString = _configuration.GetConnectionString("DeliveriesDatabase");
 
-            _services.AddDbContext<DeliveriesContext>(options => options.UseNpgsql(connectionString).UseLoggerFactory(Startup.MyLoggerFactory));
+            //_services.AddDbContext<DeliveriesContext>(options => options
+            //    .UseNpgsql(connectionString)
+            //    .UseLoggerFactory(Startup.MyLoggerFactory));
 
-            //_services.AddEntityFrameworkNpgsql().AddDbContext<DeliveriesContext>(options => options.UseNpgsql(connectionString).UseLoggerFactory(Startup.MyLoggerFactory)).BuildServiceProvider();
+            _services.AddEntityFrameworkNpgsql().AddDbContext<DeliveriesContext>(options => options
+                .UseNpgsql(connectionString)
+                .UseLoggerFactory(Startup.MyLoggerFactory),
+                ServiceLifetime.Transient)
+                .BuildServiceProvider();
         }
 
         public void AddJwtAuthentication()
