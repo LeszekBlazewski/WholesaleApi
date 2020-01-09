@@ -27,16 +27,20 @@ namespace WholesaleApi
         {
             var moduleConfiguration = new ModuleConfiguration(Configuration, services);
 
+            services.AddCors();
             moduleConfiguration.CreateNpsqlEnumMappings();
 
-            services.AddCors();
-            services.AddControllers();
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            moduleConfiguration.AddDatabaseContext();
 
+
+
+            services.AddOptions();
+
+            services.AddControllers();
+            moduleConfiguration.ConfigureServices();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             moduleConfiguration.AddJwtAuthentication();
             moduleConfiguration.AddSwagger();
-            moduleConfiguration.ConfigureServices();
-            moduleConfiguration.AddDatabaseContext();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +51,11 @@ namespace WholesaleApi
                 app.UseDeveloperExceptionPage();
             }
 
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
@@ -54,7 +63,6 @@ namespace WholesaleApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Wholesale API");
             });
 
-            app.UseRouting();
 
             // global cors policy
             app.UseCors(x => x

@@ -28,6 +28,8 @@ namespace WholesaleApi.Configuration
 
         public void ConfigureServices()
         {
+            // services.AddScoped<DbContext, CateringDbContext>();
+            // on dodawal wszystkie serwisy jako transient ale nie wiem czy to jest konieczne ( raczej nawet tak nie chcemy)
             _services.AddScoped<IUserRepository, UserRepository>();
             _services.AddScoped<IUserService, UserService>();
         }
@@ -46,11 +48,18 @@ namespace WholesaleApi.Configuration
             //    .UseNpgsql(connectionString)
             //    .UseLoggerFactory(Startup.MyLoggerFactory));
 
-            _services.AddEntityFrameworkNpgsql().AddDbContext<DeliveriesContext>(options => options
-                .UseNpgsql(connectionString)
-                .UseLoggerFactory(Startup.MyLoggerFactory),
-                ServiceLifetime.Transient)
-                .BuildServiceProvider();
+            //_services.AddEntityFrameworkNpgsql().AddDbContext<DeliveriesContext>(options => options
+            //    .UseNpgsql(connectionString)
+            //    .UseLoggerFactory(Startup.MyLoggerFactory),
+            //    ServiceLifetime.Transient)
+            //    .BuildServiceProvider();
+
+
+            _services.AddDbContext<DeliveriesContext>(options =>
+            {
+                options.UseLazyLoadingProxies();
+                options.UseNpgsql(connectionString);
+            });
         }
 
         public void AddJwtAuthentication()
