@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +31,12 @@ namespace WholesaleApi
             moduleConfiguration.CreateNpsqlEnumMappings();
 
             services.AddCors();
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            });
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             moduleConfiguration.AddJwtAuthentication();

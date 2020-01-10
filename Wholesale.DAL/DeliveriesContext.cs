@@ -163,7 +163,7 @@ namespace Wholesale.DAL
                     .HasForeignKey(d => d.OrderId)
                     .HasConstraintName("fk_order");
 
-                entity.HasOne(d => d.OrderNavigation)
+                entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)

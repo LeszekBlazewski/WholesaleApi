@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +28,13 @@ namespace WholesaleApi.Configuration
         public void ConfigureServices()
         {
             _services.AddScoped<IUserRepository, UserRepository>();
+            _services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+            _services.AddScoped<IProductRepository, ProductRepository>();
+            _services.AddScoped<IOrderRepository, OrderRepository>();
             _services.AddScoped<IUserService, UserService>();
+            _services.AddScoped<IProductCategoryService, ProductCategoryService>();
+            _services.AddScoped<IProductService, ProductService>();
+            _services.AddScoped<IOrderService, OrderService>();
         }
 
         public void CreateNpsqlEnumMappings()
@@ -49,7 +54,7 @@ namespace WholesaleApi.Configuration
             _services.AddEntityFrameworkNpgsql().AddDbContext<DeliveriesContext>(options => options
                 .UseNpgsql(connectionString)
                 .UseLoggerFactory(Startup.MyLoggerFactory),
-                ServiceLifetime.Transient)
+                ServiceLifetime.Scoped)
                 .BuildServiceProvider();
         }
 
@@ -65,26 +70,26 @@ namespace WholesaleApi.Configuration
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
-                .AddJwtBearer(x =>
+                .AddJwtBearer(options =>
                 {
-                    x.Events = new JwtBearerEvents
+                    options.Events = new JwtBearerEvents
                     {
-                        OnTokenValidated = context =>
+                        OnTokenValidated = async context =>
                         {
-                            var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
                             var userId = int.Parse(context.Principal.Identity.Name);
-                            var user = userService.GetById(userId);
+                            await using var con = new DeliveriesContext(new DbContextOptionsBuilder<DeliveriesContext>()
+                                .UseNpgsql(_configuration.GetConnectionString("DeliveriesDatabase")).Options);
+                            var user = await con.Users.FindAsync(userId);
                             if (user == null)
                             {
                                 // return unauthorized if user no longer exists
                                 context.Fail("Unauthorized");
                             }
-                            return Task.CompletedTask;
                         }
                     };
-                    x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),

@@ -12,6 +12,14 @@ namespace WholesaleApi.Configuration
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
             CreateMap<RegisterQuery, User>();
+            CreateMap<ProductCategory, ProductCategoryDto>();
+            CreateMap<ProductCategoryDto, ProductCategory>();
+            CreateMap<Product, ProductDto>();
+            CreateMap<ProductDto, Product>();
+            CreateMap<Order, OrderDto>();
+            CreateMap<OrderDto, Order>();
+            CreateMap<OrderDetails, OrderDetailsDto>();
+            CreateMap<OrderDetailsDto, OrderDetails>();
         }
     }
 }

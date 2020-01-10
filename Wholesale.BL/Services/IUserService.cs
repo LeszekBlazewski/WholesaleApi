@@ -8,13 +8,13 @@ namespace Wholesale.BL.Services
     {
         Task<User> Authenticate(string email, string password);
 
-        Task<User> GetById(int userId);
+        Task<User> GetById(int id);
 
         Task<List<User>> GetAll();
 
-        Task<User> Create(User user, string password);
+        Task<User> Create(User model, string password);
 
-        Task<User> Update(User user, string password = null);
+        Task<User> Update(User model, string password = null);
 
         Task Delete(int id);
     }

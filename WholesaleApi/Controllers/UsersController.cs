@@ -17,7 +17,7 @@ using WholesaleApi.Configuration;
 
 namespace WholesaleApi.Controllers
 {
-    [AllowAnonymous]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -33,99 +33,118 @@ namespace WholesaleApi.Controllers
             _appSettings = appSettings.Value;
         }
 
+        [AllowAnonymous]
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody]LoginQuery model)
         {
-            var user = await _userService.Authenticate(model.Email, model.Password);
-
-            if (user == null)
-                return BadRequest(new { message = "Email or password is incorrect" });
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            try
             {
-                Subject = new ClaimsIdentity(new[]
+                var user = await _userService.Authenticate(model.Email, model.Password);
+
+                if (user == null)
+                    return BadRequest(new { message = "Email or password is incorrect" });
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+                var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    new Claim(ClaimTypes.Name, user.UserId.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.Name, user.UserId.ToString())
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                        SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var tokenString = tokenHandler.WriteToken(token);
 
-            // return basic user info and authentication token
-            return Ok(new
+                return Ok(new
+                {
+                    user.UserId,
+                    user.Email,
+                    user.FirstName,
+                    user.LastName,
+                    Token = tokenString
+                });
+            }
+            catch (Exception ex)
             {
-                user.UserId,
-                user.Email,
-                user.FirstName,
-                user.LastName,
-                Token = tokenString
-            });
+                return BadRequest(new { ex.Message });
+            }
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterQuery model)
         {
-            // map model to entity
-            var user = _mapper.Map<User>(model);
-
             try
             {
-                // create user
+                var user = _mapper.Map<User>(model);
                 await _userService.Create(user, model.Password);
                 return Ok();
             }
             catch (Exception ex)
             {
-                // return error message if there was an exception
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { ex.Message });
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var users = await _userService.GetAll();
-            var model = _mapper.Map<IList<UserDto>>(users);
-            return Ok(users);
+            try
+            {
+                var users = await _userService.GetAll();
+                return Ok(_mapper.Map<IList<UserDto>>(users));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var user = await _userService.GetById(id);
-            var model = _mapper.Map<UserDto>(user);
-            return Ok(model);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody]UserDto model)
-        {
-            // map model to entity and set id
-            var user = _mapper.Map<User>(model);
-            user.UserId = id;
-
             try
             {
-                // update user 
-                await _userService.Update(user, model.Password);
-                return Ok();
+                var user = await _userService.GetById(id);
+                return Ok(_mapper.Map<UserDto>(user));
             }
             catch (Exception ex)
             {
-                // return error message if there was an exception
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody]UserDto model)
+        {
+            try
+            {
+                var user = _mapper.Map<User>(model);
+                var updatedUser = await _userService.Update(user, model.Password);
+                return Ok(_mapper.Map<UserDto>(updatedUser));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
             }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _userService.Delete(id);
-            return Ok();
+            try
+            {
+                await _userService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
         }
     }
 }
