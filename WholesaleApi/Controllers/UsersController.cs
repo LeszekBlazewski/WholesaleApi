@@ -67,6 +67,9 @@ namespace WholesaleApi.Controllers
                     user.Email,
                     user.FirstName,
                     user.LastName,
+                    user.Role,
+                    user.CompanyName,
+                    user.Phone,
                     Token = tokenString
                 });
             }
