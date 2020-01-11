@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Wholesale.BL.Enums;
 using Wholesale.BL.Models;
 using Wholesale.BL.Models.Dto;
 using Wholesale.BL.Models.Query;
@@ -17,7 +18,7 @@ using WholesaleApi.Configuration;
 
 namespace WholesaleApi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Role.Employee)]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -42,7 +43,7 @@ namespace WholesaleApi.Controllers
                 var user = await _userService.Authenticate(model.Email, model.Password);
 
                 if (user == null)
-                    return BadRequest(new { message = "Email or password is incorrect" });
+                    return BadRequest("Email or password is incorrect");
 
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -50,7 +51,8 @@ namespace WholesaleApi.Controllers
                 {
                     Subject = new ClaimsIdentity(new[]
                     {
-                        new Claim(ClaimTypes.Name, user.UserId.ToString())
+                        new Claim(ClaimTypes.Name, user.UserId.ToString()),
+                        new Claim(ClaimTypes.Role, user.Role.ToString())
                     }),
                     Expires = DateTime.UtcNow.AddDays(7),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
@@ -70,7 +72,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
@@ -86,7 +88,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
@@ -100,7 +102,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
@@ -114,7 +116,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
@@ -129,7 +131,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
@@ -143,7 +145,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
     }

@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Wholesale.BL.Enums;
 using Wholesale.BL.Models;
 using Wholesale.BL.Models.Dto;
 using Wholesale.BL.Services;
 
 namespace WholesaleApi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Role.Client)]
     [ApiController]
     [Route("[controller]")]
     public class ProductsController : ControllerBase
@@ -25,7 +26,7 @@ namespace WholesaleApi.Controllers
         }
 
 
-        [AllowAnonymous]
+        [Authorize(Roles = Role.Employee)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]ProductDto dto)
         {
@@ -37,7 +38,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
@@ -52,7 +53,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
@@ -67,10 +68,11 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
+        [Authorize(Roles = Role.Employee)]
         [HttpPut]
         public async Task<IActionResult> Update([FromBody]ProductDto dto)
         {
@@ -82,10 +84,11 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
+        [Authorize(Roles = Role.Employee)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -96,10 +99,11 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
+        [Authorize(Roles = Role.Employee)]
         [HttpGet("stats")]
         public async Task<IActionResult> GetStats()
         {
@@ -110,7 +114,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
     }

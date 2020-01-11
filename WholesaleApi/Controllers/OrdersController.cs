@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Wholesale.BL.Enums;
 using Wholesale.BL.Models;
 using Wholesale.BL.Models.Dto;
 using Wholesale.BL.Services;
 
 namespace WholesaleApi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Role.Employee)]
     [ApiController]
     [Route("[controller]")]
     public class OrdersController : ControllerBase
@@ -24,8 +25,7 @@ namespace WholesaleApi.Controllers
             _mapper = mapper;
         }
 
-
-        [AllowAnonymous]
+        [Authorize(Roles = Role.Client)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]OrderDto dto)
         {
@@ -37,7 +37,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
@@ -52,10 +52,11 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
+        [Authorize(Roles = Role.Client)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByUserId(int id)
         {
@@ -67,7 +68,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
@@ -82,7 +83,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
 
@@ -96,7 +97,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
     }

@@ -53,8 +53,7 @@ namespace WholesaleApi.Configuration
 
             _services.AddEntityFrameworkNpgsql().AddDbContext<DeliveriesContext>(options => options
                 .UseNpgsql(connectionString)
-                .UseLoggerFactory(Startup.MyLoggerFactory),
-                ServiceLifetime.Scoped)
+                .UseLoggerFactory(Startup.MyLoggerFactory))
                 .BuildServiceProvider();
         }
 
