@@ -11,7 +11,7 @@ using Wholesale.BL.Services;
 
 namespace WholesaleApi.Controllers
 {
-    [Authorize(Roles = Role.Employee)]
+    [Authorize(Roles = Role.Client)]
     [ApiController]
     [Route("[controller]")]
     public class CategoryController : ControllerBase
@@ -25,6 +25,7 @@ namespace WholesaleApi.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = Role.Employee)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]ProductCategoryDto dto)
         {
@@ -40,7 +41,6 @@ namespace WholesaleApi.Controllers
             }
         }
 
-        [Authorize(Roles = Role.Client)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -56,7 +56,6 @@ namespace WholesaleApi.Controllers
             }
         }
 
-        [Authorize(Roles = Role.Client)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -72,6 +71,7 @@ namespace WholesaleApi.Controllers
             }
         }
 
+        [Authorize(Roles = Role.Employee)]
         [HttpPut]
         public async Task<IActionResult> Update([FromBody]ProductCategoryDto dto)
         {
@@ -87,6 +87,7 @@ namespace WholesaleApi.Controllers
             }
         }
 
+        [Authorize(Roles = Role.Employee)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
