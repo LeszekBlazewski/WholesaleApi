@@ -31,10 +31,12 @@ namespace WholesaleApi.Configuration
             _services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
             _services.AddScoped<IProductRepository, ProductRepository>();
             _services.AddScoped<IOrderRepository, OrderRepository>();
+            _services.AddScoped<ICourierRepository, CourierRepository>();
             _services.AddScoped<IUserService, UserService>();
             _services.AddScoped<IProductCategoryService, ProductCategoryService>();
             _services.AddScoped<IProductService, ProductService>();
             _services.AddScoped<IOrderService, OrderService>();
+            _services.AddScoped<ICourierService, CourierService>();
         }
 
         public void CreateNpsqlEnumMappings()

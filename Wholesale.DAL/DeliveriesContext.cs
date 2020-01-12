@@ -29,8 +29,8 @@ namespace Wholesale.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasPostgresEnum<OrderStatus>(name: "order_status")
-                .HasPostgresEnum<UserRole>(name: "user_role");
+            modelBuilder.HasPostgresEnum<OrderStatus>(name: "order_status");
+            modelBuilder.HasPostgresEnum<UserRole>(name: "user_role");
 
             modelBuilder.Entity<Address>(entity =>
             {
@@ -70,6 +70,9 @@ namespace Wholesale.DAL
                 entity.HasNoKey();
 
                 entity.ToView("courier_stats");
+
+                entity.Property(e => e.CourierId)
+                    .HasColumnName("courier_id");
 
                 entity.Property(e => e.FirstName)
                     .HasColumnName("first_name")
@@ -165,7 +168,7 @@ namespace Wholesale.DAL
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.OrderId)
+                    .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_product");
             });
@@ -195,6 +198,18 @@ namespace Wholesale.DAL
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
                     .HasColumnType("order_status"); ;
+
+                entity.HasOne(d => d.Client)
+                    .WithMany(p => p.OrdersClient)
+                    .HasForeignKey(d => d.ClientId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_client");
+
+                entity.HasOne(d => d.Courier)
+                    .WithMany(p => p.OrdersCourier)
+                    .HasForeignKey(d => d.CourierId)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("fk_courier");
             });
 
             modelBuilder.Entity<ProductCategory>(entity =>

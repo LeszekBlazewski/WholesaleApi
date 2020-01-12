@@ -20,7 +20,9 @@ namespace Wholesale.BL.Models
         public string Phone { get; set; }
         public UserRole Role { get; set; }
 
-        public Address Address { get; set; }
-        public ICollection<Delivery> Deliveries { get; set; }
+        public virtual Address Address { get; set; }
+        public virtual ICollection<Delivery> Deliveries { get; set; }
+        public virtual ICollection<Order> OrdersClient { get; set; }
+        public virtual ICollection<Order> OrdersCourier { get; set; }
     }
 }

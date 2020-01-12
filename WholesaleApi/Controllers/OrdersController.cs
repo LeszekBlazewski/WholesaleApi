@@ -31,11 +31,6 @@ namespace WholesaleApi.Controllers
             try
             {
                 var model = _mapper.Map<Order>(dto);
-                //foreach (var orderDetail in model.OrderDetails)
-                //{
-                //    orderDetail.ProductId = orderDetail.Product.ProductId;
-                //    orderDetail.Product = null;
-                //}
                 await _service.Create(model);
                 return Ok();
             }

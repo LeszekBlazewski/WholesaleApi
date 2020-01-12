@@ -17,6 +17,8 @@ namespace Wholesale.BL.Models
         public DateTime Date { get; set; }
         public OrderStatus Status { get; set; }
 
+        public virtual User Client { get; set; }
+        public virtual User Courier { get; set; }
         public virtual ICollection<OrderDetails> OrderDetails { get; set; }
     }
 }
