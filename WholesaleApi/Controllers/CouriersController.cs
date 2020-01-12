@@ -28,7 +28,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
             }
         }
 
@@ -42,7 +42,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
             }
         }
     }

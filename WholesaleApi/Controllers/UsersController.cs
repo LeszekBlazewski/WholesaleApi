@@ -43,7 +43,7 @@ namespace WholesaleApi.Controllers
                 var user = await _userService.Authenticate(model.Email, model.Password);
 
                 if (user == null)
-                    return BadRequest("Email or password is incorrect");
+                    return BadRequest(new { message = "Email or password is incorrect" });
 
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -75,7 +75,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
             }
         }
 
@@ -91,7 +91,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
             }
         }
 
@@ -105,7 +105,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
             }
         }
 
@@ -119,7 +119,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
             }
         }
 
@@ -134,7 +134,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
             }
         }
 
@@ -148,7 +148,7 @@ namespace WholesaleApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
             }
         }
     }
