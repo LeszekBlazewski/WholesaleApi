@@ -119,5 +119,35 @@ namespace WholesaleApi.Controllers
                 return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
             }
         }
+
+        [Authorize(Roles = Role.Courier)]
+        [HttpGet("courier/{id}")]
+        public async Task<IActionResult> GetAllInProgress(int id)
+        {
+            try
+            {
+                var models = await _service.GetForCourierByStatus(id, OrderStatus.InProgress);
+                return Ok(_mapper.Map<IList<OrderDto>>(models));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
+            }
+        }
+
+        [Authorize(Roles = Role.Courier)]
+        [HttpGet("completed/{courierId}")]
+        public async Task<IActionResult> GetAllCompleted(int courierId)
+        {
+            try
+            {
+                var models = await _service.GetForCourierByStatus(courierId, OrderStatus.Completed);
+                return Ok(_mapper.Map<IList<OrderDto>>(models));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
+            }
+        }
     }
 }

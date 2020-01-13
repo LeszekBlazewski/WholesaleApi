@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Wholesale.BL.Enums;
 using Wholesale.BL.Models;
 using Wholesale.BL.RepositoryInterfaces;
 
@@ -47,6 +48,11 @@ namespace Wholesale.BL.Services
         public async Task<IList<Order>> GetAllAvailable()
         {
             return await _orderRepository.GetAllAvailable();
+        }
+
+        public async Task<IList<Order>> GetForCourierByStatus(int courierId, OrderStatus status)
+        {
+            return await _orderRepository.GetForCourierByStatus(courierId, status);
         }
     }
 }

@@ -105,5 +105,17 @@ namespace Wholesale.DAL.Repositories
                 .ThenInclude(v => v.Address)
                 .ToListAsync();
         }
+
+        public async Task<IList<Order>> GetForCourierByStatus(int courierId, OrderStatus status)
+        {
+            return await _context.Orders
+                .Where(x => x.Status == status && x.CourierId == courierId)
+                .Include(x => x.OrderDetails)
+                .ThenInclude(y => y.Product)
+                .ThenInclude(z => z.Category)
+                .Include(u => u.Client)
+                .ThenInclude(v => v.Address)
+                .ToListAsync();
+        }
     }
 }
