@@ -149,5 +149,20 @@ namespace WholesaleApi.Controllers
                 return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
             }
         }
+
+        [Authorize(Roles = Role.Employee)]
+        [HttpGet("totalworth")]
+        public async Task<IActionResult> GetTotalWorth([FromBody]OrderTotalWorthQuery query)
+        {
+            try
+            {
+                var model = await _service.GetOrdersTotalWorth(query.From, query.To);
+                return Ok(new { TotalWorth = model });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
+            }
+        }
     }
 }

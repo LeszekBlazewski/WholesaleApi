@@ -24,11 +24,21 @@ namespace Wholesale.DAL
         public virtual DbSet<ProductStatsV> ProductStats { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<OrderWorth> OrderWorth { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresEnum<OrderStatus>(name: "order_status");
             modelBuilder.HasPostgresEnum<UserRole>(name: "user_role");
+
+            modelBuilder.Entity<OrderWorth>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.TotalWorth)
+                    .HasColumnName("total_worth")
+                    .HasColumnType("numeric");
+            });
 
             modelBuilder.Entity<Address>(entity =>
             {

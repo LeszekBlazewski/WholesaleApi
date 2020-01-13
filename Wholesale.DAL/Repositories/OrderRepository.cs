@@ -117,5 +117,14 @@ namespace Wholesale.DAL.Repositories
                 .ThenInclude(v => v.Address)
                 .ToListAsync();
         }
+
+        public async Task<decimal> GetOrdersTotalWorth(DateTime from, DateTime to)
+        {
+            var totalWorth = (await _context.OrderWorth
+                .FromSqlInterpolated($"CALL orders_total_worth({from:yyyy-MM-dd}::DATE, {to:yyyy-MM-dd}::DATE, {1m});")
+                .ToListAsync())
+                .SingleOrDefault()?.TotalWorth;
+            return totalWorth ?? 0m;
+        }
     }
 }
