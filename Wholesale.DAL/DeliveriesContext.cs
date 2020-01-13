@@ -18,8 +18,6 @@ namespace Wholesale.DAL
 
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<CourierStatsV> CourierStats { get; set; }
-        public virtual DbSet<Delivery> Deliveries { get; set; }
-        public virtual DbSet<DeliveryDetails> DeliveryDetails { get; set; }
         public virtual DbSet<OrderDetails> OrderDetails { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<ProductCategory> ProductCategories { get; set; }
@@ -61,7 +59,7 @@ namespace Wholesale.DAL
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.Address)
                     .HasForeignKey<Address>(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_user");
             });
 
@@ -90,61 +88,6 @@ namespace Wholesale.DAL
                     .HasColumnType("numeric");
             });
 
-            modelBuilder.Entity<Delivery>(entity =>
-            {
-                entity.HasKey(e => e.DeliveryId)
-                    .HasName("deliveries_pkey");
-
-                entity.ToTable("deliveries");
-
-                entity.Property(e => e.DeliveryId)
-                    .HasColumnName("delivery_id")
-                    .HasIdentityOptions(null, null, null, null, true, null)
-                    .UseIdentityAlwaysColumn();
-
-                entity.Property(e => e.Date)
-                    .HasColumnName("date")
-                    .HasColumnType("date");
-
-                entity.Property(e => e.EmployeeId)
-                    .HasColumnName("employee_id");
-
-                entity.HasOne(d => d.Employee)
-                    .WithMany(p => p.Deliveries)
-                    .HasForeignKey(d => d.EmployeeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_employee");
-            });
-
-            modelBuilder.Entity<DeliveryDetails>(entity =>
-            {
-                entity.HasKey(e => new { e.DeliveryId, e.ProductId })
-                    .HasName("delivery_details_pkey");
-
-                entity.ToTable("delivery_details");
-
-                entity.Property(e => e.DeliveryId)
-                    .HasColumnName("delivery_id");
-
-                entity.Property(e => e.ProductId)
-                    .HasColumnName("product_id");
-
-                entity.Property(e => e.Amount)
-                    .HasColumnName("amount");
-
-                entity.HasOne(d => d.Delivery)
-                    .WithMany(p => p.DeliveryDetails)
-                    .HasForeignKey(d => d.DeliveryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_delivery");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.DeliveryDetails)
-                    .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_product");
-            });
-
             modelBuilder.Entity<OrderDetails>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
@@ -164,12 +107,13 @@ namespace Wholesale.DAL
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_order");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_product");
             });
 
@@ -333,7 +277,7 @@ namespace Wholesale.DAL
 
                 entity.Property(e => e.Role)
                     .HasColumnName("role")
-                    .HasColumnType("user_role"); ; ;
+                    .HasColumnType("user_role");
             });
         }
     }
