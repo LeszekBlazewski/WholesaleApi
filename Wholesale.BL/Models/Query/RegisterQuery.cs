@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Wholesale.BL.Enums;
+using Wholesale.BL.Models.Dto;
 
 namespace Wholesale.BL.Models.Query
 {
