@@ -23,5 +23,8 @@ namespace Wholesale.BL.Models.Query
         public string CompanyName { get; set; }
 
         public string Phone { get; set; }
+
+        [Required]
+        public AddressDto Address { get; set; }
     }
 }
