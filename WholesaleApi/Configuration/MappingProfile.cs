@@ -20,6 +20,12 @@ namespace WholesaleApi.Configuration
             CreateMap<OrderDto, Order>();
             CreateMap<OrderDetails, OrderDetailsDto>();
             CreateMap<OrderDetailsDto, OrderDetails>();
+            CreateMap<Address, AddressDto>();
+            CreateMap<AddressDto, Address>();
+            CreateMap<User, UpdateUserQuery>();
+            CreateMap<UpdateUserQuery, User>();
+            CreateMap<Order, UpdateOrderStatusQuery>();
+            CreateMap<UpdateOrderStatusQuery, Order>();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Wholesale.BL.Enums;
 using Wholesale.BL.Models;
 using Wholesale.BL.RepositoryInterfaces;
 
@@ -42,6 +43,8 @@ namespace Wholesale.DAL.Repositories
                 .Include(x => x.OrderDetails)
                 .ThenInclude(y => y.Product)
                 .ThenInclude(z => z.Category)
+                .Include(u => u.Client)
+                .ThenInclude(v => v.Address)
                 .ToListAsync();
         }
 
@@ -51,16 +54,26 @@ namespace Wholesale.DAL.Repositories
                 .Include(x => x.OrderDetails)
                 .ThenInclude(y => y.Product)
                 .ThenInclude(z => z.Category)
+                .Include(u => u.Client)
+                .ThenInclude(v => v.Address)
                 .FirstOrDefaultAsync(u => u.OrderId == id);
         }
 
         public async Task<Order> Update(Order model)
         {
-            if (await _context.Orders.AllAsync(x => x.OrderId != model.OrderId))
+            var orderToUpdate = await _context.Orders.FindAsync(model.OrderId);
+            if (orderToUpdate == null)
                 throw new InvalidOperationException("Order does not exist");
-            _context.Update(model);
+
+            if (model.Status == OrderStatus.InProgress && orderToUpdate.Status != OrderStatus.Created)
+                throw new InvalidOperationException("This order is not available anymore. Please refresh your order list");
+
+            orderToUpdate.CourierId = model.CourierId;
+            orderToUpdate.Status = model.Status;
+
+            _context.Update(orderToUpdate);
             await _context.SaveChangesAsync();
-            return model;
+            return orderToUpdate;
         }
 
         public async Task Delete(int id)
@@ -78,6 +91,18 @@ namespace Wholesale.DAL.Repositories
                 .Include(x => x.OrderDetails)
                 .ThenInclude(y => y.Product)
                 .ThenInclude(z => z.Category)
+                .ToListAsync();
+        }
+
+        public async Task<IList<Order>> GetAllAvailable()
+        {
+            return await _context.Orders
+                .Where(x => x.Status == OrderStatus.Created)
+                .Include(x => x.OrderDetails)
+                .ThenInclude(y => y.Product)
+                .ThenInclude(z => z.Category)
+                .Include(u => u.Client)
+                .ThenInclude(v => v.Address)
                 .ToListAsync();
         }
     }

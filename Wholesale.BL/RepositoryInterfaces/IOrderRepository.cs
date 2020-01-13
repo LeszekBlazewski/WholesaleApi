@@ -12,5 +12,6 @@ namespace Wholesale.BL.RepositoryInterfaces
         Task<Order> Update(Order model);
         Task Delete(int id);
         Task<IList<Order>> GetByUserId(int userId);
+        Task<IList<Order>> GetAllAvailable();
     }
 }

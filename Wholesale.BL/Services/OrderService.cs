@@ -43,5 +43,10 @@ namespace Wholesale.BL.Services
         {
             return await _orderRepository.GetByUserId(userId);
         }
+
+        public async Task<IList<Order>> GetAllAvailable()
+        {
+            return await _orderRepository.GetAllAvailable();
+        }
     }
 }

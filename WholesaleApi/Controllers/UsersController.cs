@@ -124,7 +124,7 @@ namespace WholesaleApi.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody]UserDto model)
+        public async Task<IActionResult> Update([FromBody]UpdateUserQuery model)
         {
             try
             {

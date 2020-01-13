@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Wholesale.BL.Enums;
 using Wholesale.BL.Models;
 using Wholesale.BL.Models.Dto;
+using Wholesale.BL.Models.Query;
 using Wholesale.BL.Services;
 
 namespace WholesaleApi.Controllers
 {
-    [Authorize(Roles = Role.Client)]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class OrdersController : ControllerBase
@@ -25,6 +26,7 @@ namespace WholesaleApi.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = Role.Client)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]OrderDto dto)
         {
@@ -56,6 +58,7 @@ namespace WholesaleApi.Controllers
             }
         }
 
+        [Authorize(Roles = Role.Client)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByUserId(int id)
         {
@@ -71,15 +74,15 @@ namespace WholesaleApi.Controllers
             }
         }
 
-        [Authorize(Roles = Role.Employee)]
+        [Authorize(Roles = Role.Courier)]
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody]OrderDto dto)
+        public async Task<IActionResult> Update([FromBody]UpdateOrderStatusQuery dto)
         {
             try
             {
                 var model = _mapper.Map<Order>(dto);
                 await _service.Update(model);
-                return Ok();
+                return Ok(_mapper.Map<UpdateOrderStatusQuery>(model));
             }
             catch (Exception ex)
             {
@@ -95,6 +98,21 @@ namespace WholesaleApi.Controllers
             {
                 await _service.Delete(id);
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.InnerException == null ? ex.Message : ex.InnerException.Message });
+            }
+        }
+
+        [Authorize(Roles = Role.Courier)]
+        [HttpGet("available")]
+        public async Task<IActionResult> GetAllAvailable()
+        {
+            try
+            {
+                var models = await _service.GetAllAvailable();
+                return Ok(_mapper.Map<IList<OrderDto>>(models));
             }
             catch (Exception ex)
             {
