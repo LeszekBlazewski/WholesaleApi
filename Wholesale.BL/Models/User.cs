@@ -5,10 +5,7 @@ namespace Wholesale.BL.Models
 {
     public class User
     {
-        public User()
-        {
-            Deliveries = new HashSet<Delivery>();
-        }
+        public User() { }
 
         public int? UserId { get; set; }
         public byte[] PasswordHash { get; set; }
@@ -21,7 +18,6 @@ namespace Wholesale.BL.Models
         public UserRole Role { get; set; }
 
         public virtual Address Address { get; set; }
-        public virtual ICollection<Delivery> Deliveries { get; set; }
         public virtual ICollection<Order> OrdersClient { get; set; }
         public virtual ICollection<Order> OrdersCourier { get; set; }
     }

@@ -6,7 +6,6 @@ namespace Wholesale.BL.Models
     {
         public Product()
         {
-            DeliveryDetails = new HashSet<DeliveryDetails>();
             OrderDetails = new HashSet<OrderDetails>();
         }
 
@@ -17,7 +16,6 @@ namespace Wholesale.BL.Models
         public int Stock { get; set; }
 
         public virtual ProductCategory Category { get; set; }
-        public virtual ICollection<DeliveryDetails> DeliveryDetails { get; set; }
         public virtual ICollection<OrderDetails> OrderDetails { get; set; }
     }
 }
