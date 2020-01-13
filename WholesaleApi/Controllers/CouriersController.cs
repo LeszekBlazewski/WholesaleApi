@@ -8,6 +8,8 @@ using Wholesale.BL.Services;
 namespace WholesaleApi.Controllers
 {
     [Authorize(Roles = Role.Courier)]
+    [ApiController]
+    [Route("[controller]")]
     public class CouriersController : ControllerBase
     {
         private readonly ICourierService _courierService;
