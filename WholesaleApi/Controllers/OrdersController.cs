@@ -157,7 +157,7 @@ namespace WholesaleApi.Controllers
             try
             {
                 var model = await _service.GetOrdersTotalWorth(query.From, query.To);
-                return Ok(new { TotalWorth = model });
+                return Ok(model);
             }
             catch (Exception ex)
             {
