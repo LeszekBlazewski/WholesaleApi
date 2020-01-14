@@ -151,7 +151,7 @@ namespace WholesaleApi.Controllers
         }
 
         [Authorize(Roles = Role.Employee)]
-        [HttpGet("totalworth")]
+        [HttpPost("totalworth")]
         public async Task<IActionResult> GetTotalWorth([FromBody]OrderTotalWorthQuery query)
         {
             try
