@@ -2,6 +2,6 @@
 {
     public class OrderWorth
     {
-        public decimal TotalWorth { get; set; }
+        public decimal? TotalWorth { get; set; }
     }
 }
