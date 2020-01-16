@@ -37,22 +37,6 @@ namespace Wholesale.DAL.Repositories
             await _context.SaveChangesAsync();
 
             return model;
-
-            //var orderDetails = model.OrderDetails;
-
-            //model.OrderDetails = new List<OrderDetails>();
-            //_context.Orders.Add(model);
-            //await _context.SaveChangesAsync();
-
-            //foreach (var orderDetail in orderDetails)
-            //{
-            //    orderDetail.ProductId = orderDetail.Product.ProductId;
-            //    orderDetail.Product = await _context.Products.FindAsync(orderDetail.ProductId);
-            //    orderDetail.OrderId = model.OrderId;
-            //}
-            //_context.OrderDetails.AddRange(orderDetails);
-            //await _context.SaveChangesAsync();
-            //return await GetById(model.OrderId);
         }
 
         public async Task<List<Order>> GetAll()
