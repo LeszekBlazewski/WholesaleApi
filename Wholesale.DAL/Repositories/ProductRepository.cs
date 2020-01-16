@@ -20,6 +20,7 @@ namespace Wholesale.DAL.Repositories
 
         public async Task<Product> Create(Product model)
         {
+            _context.ProductCategories.Attach(model.Category);
             _context.Products.Add(model);
             await _context.SaveChangesAsync();
             return model;
