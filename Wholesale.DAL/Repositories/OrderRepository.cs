@@ -20,21 +20,39 @@ namespace Wholesale.DAL.Repositories
 
         public async Task<Order> Create(Order model)
         {
-            var orderDetails = model.OrderDetails;
+            var prodcuts = await _context.Products.Where(x => model.OrderDetails.Select(z => z.Product).Contains(x)).ToListAsync();
 
-            model.OrderDetails = new List<OrderDetails>();
-            _context.Orders.Add(model);
-            await _context.SaveChangesAsync();
+            model.OrderDetails.ToList().ForEach(o => o.Product = prodcuts.First(y => y.ProductId == o.Product.ProductId));
 
-            foreach (var orderDetail in orderDetails)
+            prodcuts.ForEach(z =>
             {
-                orderDetail.ProductId = orderDetail.Product.ProductId;
-                orderDetail.Product = await _context.Products.FindAsync(orderDetail.ProductId);
-                orderDetail.OrderId = model.OrderId;
-            }
-            _context.OrderDetails.AddRange(orderDetails);
+                if (z.Stock > 0)
+                    z.Stock--;
+            });
+
+            _context.Products.UpdateRange(prodcuts);
+
+            _context.Orders.Add(model);
+
             await _context.SaveChangesAsync();
-            return await GetById(model.OrderId);
+
+            return model;
+
+            //var orderDetails = model.OrderDetails;
+
+            //model.OrderDetails = new List<OrderDetails>();
+            //_context.Orders.Add(model);
+            //await _context.SaveChangesAsync();
+
+            //foreach (var orderDetail in orderDetails)
+            //{
+            //    orderDetail.ProductId = orderDetail.Product.ProductId;
+            //    orderDetail.Product = await _context.Products.FindAsync(orderDetail.ProductId);
+            //    orderDetail.OrderId = model.OrderId;
+            //}
+            //_context.OrderDetails.AddRange(orderDetails);
+            //await _context.SaveChangesAsync();
+            //return await GetById(model.OrderId);
         }
 
         public async Task<List<Order>> GetAll()

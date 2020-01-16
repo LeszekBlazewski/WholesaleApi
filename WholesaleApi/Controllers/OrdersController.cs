@@ -34,7 +34,7 @@ namespace WholesaleApi.Controllers
             {
                 var model = _mapper.Map<Order>(dto);
                 await _service.Create(model);
-                return Ok();
+                return Ok(_mapper.Map<OrderDto>(model));
             }
             catch (Exception ex)
             {

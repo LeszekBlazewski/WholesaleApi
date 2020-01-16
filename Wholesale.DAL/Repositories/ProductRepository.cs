@@ -42,7 +42,7 @@ namespace Wholesale.DAL.Repositories
 
         public async Task<Product> Update(Product model)
         {
-            if (await _context.Products.AllAsync(x => x.CategoryId == model.CategoryId))
+            if (!(await _context.Products.AnyAsync(x => x.ProductId == model.ProductId)))
                 throw new InvalidOperationException("Product does not exist");
             _context.Products.Update(model);
             await _context.SaveChangesAsync();
