@@ -1,0 +1,12 @@
+version: "3.1"
+
+services:
+  deliveries:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: employee1
+      POSTGRES_USER: employee
+      POSTGRES_DB: deliveries
+    ports:
+      - 5432:5432
