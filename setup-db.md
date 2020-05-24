@@ -111,8 +111,43 @@ CREATE VIEW public.courier_stats
   ORDER BY u.last_name, u.first_name;
 ```
 
+```SQL
+CREATE VIEW public.product_stats
+ AS
+SELECT pr.product_id "product_id", pr.name "name", pc.name "category", pr.price "current_price", SUM(od.amount) "number_sold"
+  FROM products pr
+  LEFT JOIN product_categories pc USING (category_id)
+  LEFT JOIN order_details od USING (product_id)
+  JOIN orders o USING (order_id)
+  WHERE o.date > now() - interval '1 year'
+  GROUP BY pr.product_id, pr.name, pc.name
+```
+
 # using the app
+
+Start the api normally from visual studio (run WholesaleApi project)
+
+From fronted repo run
+
+(assuming node is installed)
+
+npm install
+
+ng serve
+
+# create admin account
+
+The fastest way is to register as client from the running app and then go to Navigate to http://localhost:5050 and execute following query
+
+```SQL
+update users set role = 'employee'
+where email = 'email_given_by_registration@email.com'
+```
+
+# info about data
 
 To use the app you need to register with different roles client/courier but to access employee account you have to manually update the required Role filed in db for given account.
 
 There are no accounts or any data predefined.
+
+Also the data is not preserved via volumes so as long as you stop your container you will not lose any data only termination of container removes it.
